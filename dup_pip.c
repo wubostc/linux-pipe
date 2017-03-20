@@ -30,23 +30,19 @@ int main()
         while(1)
         {
             memset(szBuf,0,1024);
-            /*printf("11111");*/
             int len = read(STDIN_FILENO,szBuf,1024);//blocked
+
             if(len == -1)
             {
                 perror("read fail.\n");
-                break;
+                _exit(-1);
             }
-            else
+            if(strcmp(szBuf,"exit\n") == 0)
             {
-                printf("receive:%s",szBuf);
-                if(strcmp(szBuf,"exit\n") == 0)
-                {
-                    break;
-                }
+                _exit(0);
             }
+            printf("receive:%s",szBuf);
         }
-        _exit(0);
     }
     else
     {
@@ -62,10 +58,10 @@ int main()
         {
             fgets(szBuf,1024,stdin);
             write(STDOUT_FILENO,szBuf,strlen(szBuf));
-            /*printf("send: %s",szBuf);*/
+
             if(strcmp(szBuf,"exit\n") == 0)
             {
-                wait(NULL);
+                waitpid(-1,NULL,0);
                 break;
             }
             sleep(1);
